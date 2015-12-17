@@ -5,33 +5,45 @@ public class Fader : MonoBehaviour {
 
 	public GameObject FaderObject;
 
-	private bool isFaded = false;
-	private Fade fade;
+	[HideInInspector]
+	public Fade Fade;
+
+	private GameObject m_FaderObjectInstance;
+
+	void Setup() {
+		Debug.Log("Fader set up.");
+
+		m_FaderObjectInstance = Instantiate(FaderObject, gameObject.transform.position, Quaternion.identity) as GameObject;
+		m_FaderObjectInstance.transform.parent = gameObject.transform;
+		m_FaderObjectInstance.SetActive(false);
+		Fade = m_FaderObjectInstance.GetComponent<Fade>();
+		Fade.OnFadeEnd += fadeEndHandler;
+	}
 
 	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (isFaded) {
-			return;
-		}
+	void Awake () {
+		Debug.Log("Awake a fader.");
 
-		if (Input.GetKeyDown(KeyCode.Space)) {
-			isFaded = true;
-
-			GameObject faderIns = Instantiate(FaderObject, Camera.main.transform.position, Quaternion.identity) as GameObject;
-			faderIns.transform.parent = gameObject.transform;
-			fade = faderIns.GetComponent<Fade>();
-			fade.OnFadeEnd += fadeEndHandler;
-			fade.FadeOut();
-		}
+		Setup();
 	}
 
+	public void FadeIn() {
+		Debug.Log("Start fade in.");
+
+		m_FaderObjectInstance.SetActive(true);
+		Fade.FadeIn();
+	}
+
+	public void FadeOut() {
+		Debug.Log("Start fade out.");
+
+		m_FaderObjectInstance.SetActive(true);
+		Fade.FadeOut();
+	}
+	
 	void fadeEndHandler() {
-		fade.OnFadeEnd -= fadeEndHandler;
-		fade.FadeIn();
+		Debug.Log("Perfrom fade end handler.");
+
+		m_FaderObjectInstance.SetActive(false);
 	}
 }
