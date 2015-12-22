@@ -11,15 +11,36 @@ public class Fade : MonoBehaviour {
 
 	public delegate void fadeEnd();
 	public event fadeEnd OnFadeEnd = delegate {};
+	public bool IsFading = false;
 	#endregion
 
 	private YieldInstruction m_Instruction = new WaitForEndOfFrame();
 
+	void Start() {
+		OnFadeEnd += FadeEndHandler;
+	}
+
+	void FadeEndHandler() {
+		IsFading = false;
+	}
+
 	public void FadeIn() {
+		if (IsFading) {
+			return;
+		}
+		Debug.Log("Start fade in.");
+		IsFading = true;
+
 		StartCoroutine(FadeStart(true));
 	}
 
 	public void FadeOut() {
+		if (IsFading) {
+			return;
+		}
+		Debug.Log("Start fade out.");
+		IsFading = true;
+
 		StartCoroutine(FadeStart(false));
 	}
 
@@ -35,6 +56,8 @@ public class Fade : MonoBehaviour {
 
 			elapsedTime += Time.deltaTime;
 			t = elapsedTime / Duration;
+			t = t - 1f;
+			t = Mathf.Pow(t, 5) + 1f;
 
 			float value;
 			if (isFadeIn) {
@@ -47,7 +70,8 @@ public class Fade : MonoBehaviour {
 			bottomMaterial.SetFloat("_Width", value);
 		}
 
-		Debug.Log("Fade end!!");
 		OnFadeEnd();
+
+		Debug.Log("Fade end!!");
 	}
 }
