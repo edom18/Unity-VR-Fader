@@ -3,12 +3,26 @@ using System.Collections;
 
 public class Fader : MonoBehaviour {
 
-	public GameObject FaderObject;
+	[SerializeField]
+	private GameObject FaderObject;
 
 	[HideInInspector]
 	public Fade Fade;
 
+	public bool IsFading {
+		get {
+			return Fade.IsFading;
+		}
+	}
+
 	private GameObject m_FaderObjectInstance;
+
+	// Use this for initialization
+	void Awake () {
+		Debug.Log("Awake a fader.");
+
+		Setup();
+	}
 
 	void Setup() {
 		Debug.Log("Fader set up.");
@@ -18,13 +32,6 @@ public class Fader : MonoBehaviour {
 		m_FaderObjectInstance.SetActive(false);
 		Fade = m_FaderObjectInstance.GetComponent<Fade>();
 		Fade.OnFadeEnd += fadeEndHandler;
-	}
-
-	// Use this for initialization
-	void Awake () {
-		Debug.Log("Awake a fader.");
-
-		Setup();
 	}
 
 	public void FadeIn() {
