@@ -28,7 +28,7 @@
 		float _Width;
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
-			float strength = length(fixed2(0.5) - IN.uv_MainTex) * 2.;
+			float strength = length(fixed2(0.5, 0.5) - IN.uv_MainTex) * 2.;
 			float alpha    = 1. - pow(strength, _Width);
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
 
